@@ -1,0 +1,193 @@
+<div class="row pt-4">
+  <div class="col-sm-12">
+    <div class="element-wrapper">
+      <div class="element-content">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="panel-group">
+              <div class="pipeline white lined-primary">
+                <div class="pipeline-header">
+                  <span class="pipeline-name"><b><i class="fa fa-columns faw"></i>
+                      Issued Inventory</b></span>
+                  <button class="btn btn-default btn-white btn-rounded btn-lg float-right" (click)="addFunction()"><i
+                      class="fa fa-plus faw" aria-hidden="true"></i> Issue Item</button>
+                </div>
+                <div class="pipeline-body">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="outer-div">
+                        <div class="grid-wrapper">
+                          <ag-grid-angular (gridReady)="onGridReady($event)" #agGrid style="width: 100%; height: 400px;"
+                            id="myGrid" [rowData]="rowData" class="ag-theme-balham" [paginationAutoPageSize]="true"
+                            [columnDefs]="columnDefs" [floatingFilter]="true" [enableFilter]="false"
+                            [frameworkComponents]="frameworkComponents" [enableSorting]="true">
+                          </ag-grid-angular>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div aria-labelledby="exampleModalLabel" class="modal fade show" id="addModal" role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus" aria-hidden="true"></i> Add Product
+        </h5>
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true"> ×</span>
+        </button>
+      </div>
+      <form action="" class="form" (ngSubmit)="f.form.valid && addIssueItem(item)" #f="ngForm" novalidate>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label">Select Item<span style="color:red">*</span></label>
+                    <select [(ngModel)]="item.item_id" name="item_id" class="form-control" 
+                      [ngClass]="{'is-invalid' : f.submitted && item_id.invalid }" #item_id="ngModel" required>
+                      <option [value]=null>--Select Item--</option>
+                      <option *ngFor="let product of rowData" [value]="product.inventory_ITEMID.inventory_ITEMID">{{product.inventory_ITEMID.inventory_ITEMNAME}}</option>
+                    </select>
+                    <div *ngIf="f.submitted && item_id.invalid" class="invalid-feedback">
+                      <div *ngIf="item_id.errors.required">Please Select an Item</div>
+                    </div>
+                  </div>
+            </div>
+                  <div class="row">
+                  <div class="col-md-12">
+                      <label class="control-label">Select Employee<span style="color:red">*</span></label>
+                      <select [(ngModel)]="item.brand_id" name="brand_id" class="form-control"
+                        [ngClass]="{'is-invalid' : f.submitted && brand_id.invalid }" #brand_id="ngModel" required>
+                        <option [value]=null>--Select Employee--</option>
+                        <option *ngFor="let brand of rowData" [value]="brand.inventory_ITEMID.brand_ID.brand_FULLNAME">{{brand.inventory_ITEMID.brand_ID.brand_ID+ ") " + brand.inventory_ITEMID.brand_ID.brand_FULLNAME}}</option>
+                     </select>
+                      <div *ngIf="f.submitted && brand_id.invalid" class="invalid-feedback">
+                        <div *ngIf="brand_id.errors.required">Please Select a Employee</div>
+                      </div>
+                    </div>
+            
+              </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group ">
+                <label class="control-label"> Quantity<span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="quantity" [(ngModel)]="item.quantity" maxlength="50" [ngClass]="{'is-invalid' : f.submitted && quantity.invalid }"  #quantity="ngModel" required>
+                <div *ngIf="f.submitted && quantity.invalid" class="invalid-feedback">
+                  <div style="color:red" *ngIf="quantity.errors.required">Quantity is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class="row">
+            <div class="col-md-12">
+              <div class="form-group ">
+                <label class="control-label">Issue Date <span style="color:red">*</span></label>
+                <input type="date" class="form-control" name="take_date" [(ngModel)]="item.take_date"
+                  maxlength="50" [ngClass]="{'is-invalid' : f.submitted && take_date.invalid }" #take_date="ngModel" required >
+                  <div *ngIf="f.submitted && take_date.invalid" class="invalid-feedback">
+                    <div style="color:red" *ngIf="take_date.errors.required">Date is required</div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>
+            Add</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div aria-labelledby="exampleModalLabel" class="modal fade show" id="editModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus" aria-hidden="true"></i> Update Purchase Order
+          </h5>
+          <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+            <span aria-hidden="true"> ×</span>
+          </button>
+        </div>
+        <form action="" class="form" (ngSubmit)="f.form.valid && editIssueEmp(item)" #f="ngForm" novalidate>
+          <div class="modal-body">
+              <div class="row">
+              <div class="col-md-12">  
+                  <div class="form-group ">
+                    <label class="control-label">Employee name</label>
+                    <input type="text" class="form-control" name="brand_id"
+                    readonly="readonly"
+                     [(ngModel)]="item.brand_id"
+                       >  
+                  </div>
+              </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                      <label class="control-label">Select Item<span style="color:red">*</span></label>
+                      <select [(ngModel)]="item.item_id" name="item_id" class="form-control" 
+                        [ngClass]="{'is-invalid' : f.submitted && item_id.invalid }" #item_id="ngModel" required>
+                        <option [value]=null>--Select Item--</option>
+                        <option *ngFor="let product of rowData" [value]="product.inventory_ITEMID.inventory_ITEMID">{{product.inventory_ITEMID.inventory_ITEMNAME}}</option>
+                      </select>
+                      <div *ngIf="f.submitted && item_id.invalid" class="invalid-feedback">
+                        <div *ngIf="item_id.errors.required">Please Select an Item</div>
+                      </div>
+                    </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group ">
+                      <label class="control-label"> Quantity<span style="color:red">*</span></label>
+                      <input type="number" class="form-control" name="quantity" [(ngModel)]="item.quantity" maxlength="50" [ngClass]="{'is-invalid' : f.submitted && quantity.invalid }"  #quantity="ngModel" required>
+                      <div *ngIf="f.submitted && quantity.invalid" class="invalid-feedback">
+                        <div style="color:red" *ngIf="quantity.errors.required">Quantity is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group ">
+                      <label class="control-label">Issue Date <span style="color:red">*</span></label>
+                      <input type="text" class="form-control" name="take_date" [(ngModel)]="item.take_date"
+                        maxlength="50" [ngClass]="{'is-invalid' : f.submitted && take_date.invalid }" #take_date="ngModel" required >
+                        <div *ngIf="f.submitted && take_date.invalid" class="invalid-feedback">
+                          <div style="color:red" *ngIf="take_date.errors.required">Date is required</div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                
+              
+            
+
+            <div class="row">
+              <input type="checkbox" name="isactive" [(ngModel)]="item.isactive" [checked]="item.isactive"  /> Active<br/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i>
+              Update</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

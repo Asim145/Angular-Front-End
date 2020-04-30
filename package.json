@@ -33,7 +33,7 @@
         "core-js": "^2.5.4",
         "datatables.net": "^1.10.19",
         "datatables.net-dt": "^1.10.19",
-        "jquery": "^3.3.1",
+        "jquery": "^3.5.0",
         "ngx-cookie-service": "^1.0.10",
         "ngx-icon-picker": "0.0.8",
         "ngx-restangular": "^3.0.0",
